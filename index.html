@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#1b3a4b">
+<title>沖縄旅程</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Shippori+Mincho:wght@600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main id="gate" class="gate">
+  <div class="gate-card">
+    <div class="gate-emoji">🌺</div>
+    <h1 class="gate-title">沖縄旅程</h1>
+    <p class="gate-lead">合言葉を入れると旅程が表示されます。</p>
+    <form id="gate-form" autocomplete="off">
+      <input id="pass" type="password" inputmode="text" placeholder="合言葉" autocapitalize="off" autocorrect="off" required>
+      <label class="remember"><input id="remember" type="checkbox" checked> この端末で記憶する</label>
+      <button type="submit">開く</button>
+      <p id="gate-error" class="gate-error" hidden>合言葉が違うみたいです。</p>
+    </form>
+  </div>
+</main>
+
+<main id="app" class="app" hidden>
+  <header class="hero">
+    <p class="hero-kicker" id="couple"></p>
+    <h1 id="title"></h1>
+    <p class="hero-sub" id="subtitle"></p>
+    <p class="hero-today" id="today-line"></p>
+  </header>
+
+  <nav class="daynav" id="daynav" aria-label="日付"></nav>
+
+  <section id="days" class="days"></section>
+
+  <section class="open" id="open-section">
+    <h2>未確定事項</h2>
+    <ul id="open-list"></ul>
+  </section>
+
+  <section class="legend">
+    <span class="badge confirmed">確定</span>
+    <span class="badge tentative">案・未確定</span>
+    <span class="badge check">要確認</span>
+  </section>
+
+  <footer class="foot">
+    <span id="updated"></span>
+    <button id="lock" class="linkbtn" type="button">ロックする</button>
+  </footer>
+</main>
+
+<template id="day-tpl">
+  <article class="day">
+    <div class="day-visual">
+      <span class="day-emoji"></span>
+      <img class="day-img" alt="" hidden>
+    </div>
+    <div class="day-body">
+      <header class="day-head">
+        <div class="day-date"><span class="d"></span><span class="w"></span></div>
+        <h2 class="day-theme"></h2>
+      </header>
+      <ul class="items"></ul>
+      <div class="stay"></div>
+      <ul class="notes"></ul>
+    </div>
+  </article>
+</template>
+
+<script src="app.js"></script>
+</body>
+</html>

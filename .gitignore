@@ -1,0 +1,4 @@
+# 平文の旅程データは手元だけ（暗号化した data/itinerary.enc.json をコミットする）
+private/
+.DS_Store
+node_modules/
