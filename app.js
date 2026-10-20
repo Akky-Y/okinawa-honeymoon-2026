@@ -87,8 +87,10 @@
 
       const a = document.createElement("a");
       a.href = "#" + node.id; a.className = rel; a.textContent = `${m}/${d}${w}`;
+      a.addEventListener("click", (ev) => { ev.preventDefault(); goTo(node.id); });
       nav.append(a);
     }
+    watchActive();
 
     const tl = $("#today-line");
     if (todayDay) tl.textContent = `今日 ${todayISO().slice(5).replace("-", "/")}：${todayDay.theme}`;
@@ -104,7 +106,39 @@
 
     $("#gate").hidden = true;
     $("#app").hidden = false;
-    if (todayDay && !location.hash) requestAnimationFrame(() => $("#d" + todayDay.date)?.scrollIntoView({ block: "start" }));
+    const target = location.hash ? location.hash.slice(1) : todayDay ? "d" + todayDay.date : null;
+    if (target) requestAnimationFrame(() => goTo(target));
+  }
+
+  // ---------- 日付タブの選択表示 ----------
+  let lockUntil = 0;
+  function setActive(id) {
+    const nav = $("#daynav");
+    for (const a of nav.children) {
+      const on = a.getAttribute("href") === "#" + id;
+      a.classList.toggle("active", on);
+      if (on) nav.scrollTo({ left: a.offsetLeft - (nav.clientWidth - a.offsetWidth) / 2, behavior: "smooth" }); // 横方向だけ動かす
+    }
+  }
+  function goTo(id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    lockUntil = Date.now() + 900; // スクロール中に別の日へ乗り換えないように
+    setActive(id);
+    el.scrollIntoView({ block: "start", behavior: "smooth" });
+    history.replaceState(null, "", "#" + id);
+  }
+  function watchActive() {
+    const days = [...document.querySelectorAll(".day")];
+    const pick = () => {
+      if (Date.now() < lockUntil) return;
+      const line = 120; // 固定ナビの少し下
+      let cur = days[0];
+      for (const d of days) if (d.getBoundingClientRect().top <= line) cur = d;
+      setActive(cur.id);
+    };
+    addEventListener("scroll", pick, { passive: true });
+    pick();
   }
 
   // ---------- boot ----------

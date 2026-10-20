@@ -66,8 +66,10 @@ a { color: inherit; }
 .daynav { display: flex; gap: 8px; overflow-x: auto; padding: 8px 4px 12px; scrollbar-width: none; position: sticky; top: 0; background: var(--bg); z-index: 5; }
 .daynav::-webkit-scrollbar { display: none; }
 .daynav a { flex: 0 0 auto; text-decoration: none; background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; font-size: 13px; color: var(--muted); }
-.daynav a.today { background: var(--accent); color: var(--bg); border-color: var(--accent); font-weight: 700; }
+.daynav a.today { border-color: var(--sea); color: var(--sea); font-weight: 700; }
 .daynav a.past { opacity: .55; }
+.daynav a.active { background: var(--accent); color: var(--bg); border-color: var(--accent); font-weight: 700; opacity: 1; }
+html { scroll-behavior: smooth; }
 
 .days { display: grid; gap: 16px; margin-top: 8px; }
 .day { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; scroll-margin-top: 64px; display: grid; grid-template-columns: 1fr; }
