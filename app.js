@@ -4,7 +4,7 @@
   const STORE_KEY = "okinawa.pass";
   const TZ = "Asia/Tokyo";
   const WEEK = ["日", "月", "火", "水", "木", "金", "土"];
-  const STATUS = { confirmed: "確定", tentative: "案", check: "要確認", info: "" };
+  const STATUS = { confirmed: "確定", tentative: "案", check: "要確認", info: "", cut: "" };
 
   // ---------- crypto（tools/crypt.mjs と同じパラメータ） ----------
   const unb64 = (s) => Uint8Array.from(atob(s), (c) => c.charCodeAt(0));
@@ -27,6 +27,45 @@
     return { m, d, w };
   }
   const mapUrl = (q) => "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(q);
+
+  function renderItems(ul, items) {
+    ul.replaceChildren();
+    for (const it of items) {
+      const li = document.createElement("li");
+      li.className = "item" + (it.status === "move" ? " move" : "") + (it.status === "cut" ? " cut" : "");
+      const t = document.createElement("span"); t.className = "t"; t.textContent = it.time || "";
+      const c = document.createElement("span"); c.className = "c";
+      const ti = document.createElement("span"); ti.className = "ti"; ti.textContent = it.title;
+      c.append(ti);
+      if (it.status && STATUS[it.status]) { const b = document.createElement("span"); b.className = "badge " + it.status; b.textContent = STATUS[it.status]; c.append(b); }
+      if (it.map) { const a = document.createElement("a"); a.className = "map"; a.href = mapUrl(it.map); a.target = "_blank"; a.rel = "noopener"; a.textContent = "地図 ↗"; c.append(a); }
+      if (it.note) { const n = document.createElement("span"); n.className = "no"; n.textContent = it.note; c.append(n); }
+      li.append(t, c);
+      ul.append(li);
+    }
+  }
+
+  function mountPlanner(day, node, ul) {
+    const pl = day.planner, key = "okinawa.plan." + day.date;
+    let cur = pl.default;
+    try { const v = localStorage.getItem(key); if (v && pl.options.includes(v)) cur = v; } catch {}
+    const box = document.createElement("div");
+    box.className = "planner";
+    const h = document.createElement("div"); h.className = "planner-label"; h.textContent = "⏱ " + pl.label;
+    const chips = document.createElement("div"); chips.className = "chips";
+    for (const o of pl.options) {
+      const b = document.createElement("button"); b.type = "button"; b.textContent = o; b.dataset.v = o;
+      b.addEventListener("click", () => { cur = o; try { localStorage.setItem(key, o); } catch {} draw(); });
+      chips.append(b);
+    }
+    box.append(h, chips);
+    ul.before(box);
+    function draw() {
+      for (const b of chips.children) b.classList.toggle("on", b.dataset.v === cur);
+      renderItems(ul, window.Planner.plan(pl, cur));
+    }
+    draw();
+  }
 
   // ---------- render ----------
   function render(data, updated) {
@@ -56,19 +95,8 @@
       if (rel === "today") todayDay = day;
 
       const ul = $(".items", node);
-      for (const it of day.items || []) {
-        const li = document.createElement("li");
-        li.className = "item" + (it.status === "move" ? " move" : "");
-        const t = document.createElement("span"); t.className = "t"; t.textContent = it.time || "";
-        const c = document.createElement("span"); c.className = "c";
-        const ti = document.createElement("span"); ti.className = "ti"; ti.textContent = it.title;
-        c.append(ti);
-        if (it.status && STATUS[it.status]) { const b = document.createElement("span"); b.className = "badge " + it.status; b.textContent = STATUS[it.status]; c.append(b); }
-        if (it.map) { const a = document.createElement("a"); a.className = "map"; a.href = mapUrl(it.map); a.target = "_blank"; a.rel = "noopener"; a.textContent = "地図 ↗"; c.append(a); }
-        if (it.note) { const n = document.createElement("span"); n.className = "no"; n.textContent = it.note; c.append(n); }
-        li.append(t, c);
-        ul.append(li);
-      }
+      if (day.planner && window.Planner) mountPlanner(day, node, ul);
+      else renderItems(ul, day.items || []);
 
       const dec = day.decision;
       let decEl = $(".decision", node);
