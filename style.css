@@ -122,3 +122,14 @@ html { scroll-behavior: smooth; }
 .item.move .t { visibility: hidden; }
 .item.move .c .ti { font-weight: 400; font-size: 13px; color: var(--muted); }
 .item.move .c { border-left: 2px dashed var(--line); padding-left: 10px; }
+
+.decision { margin-top: 14px; border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; }
+.decision h3 { margin: 0 0 8px; font-size: 14px; color: var(--accent); }
+.decision table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.decision th { text-align: left; color: var(--muted); font-weight: 700; font-size: 12px; padding: 0 6px 4px 0; }
+.decision td { vertical-align: top; padding: 6px 6px 6px 0; border-top: 1px solid var(--line); }
+.decision td:first-child { white-space: nowrap; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--accent); }
+.decision td.cut { white-space: nowrap; font-weight: 700; color: var(--chk); }
+.decision .dfoot { margin: 8px 0 0; font-size: 12px; color: var(--muted); }
+.decision .dfoot:empty { display: none; }
+.decision td.cut.none { color: var(--muted); }

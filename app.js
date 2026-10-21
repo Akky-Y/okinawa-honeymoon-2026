@@ -70,6 +70,25 @@
         ul.append(li);
       }
 
+      const dec = day.decision;
+      let decEl = $(".decision", node);
+      if (!decEl) { // 古い index.html がキャッシュされていても動くように
+        decEl = document.createElement("div"); decEl.className = "decision";
+        decEl.innerHTML = '<h3></h3><table><thead><tr></tr></thead><tbody></tbody></table><p class="dfoot"></p>';
+        $(".stay", node).before(decEl);
+      }
+      if (dec) {
+        decEl.hidden = false;
+        $("h3", decEl).textContent = "⏱ " + dec.title;
+        for (const hd of dec.head || []) { const th = document.createElement("th"); th.textContent = hd; $("thead tr", decEl).append(th); }
+        for (const row of dec.rows || []) {
+          const tr = document.createElement("tr");
+          row.forEach((cell, i) => { const td = document.createElement("td"); td.textContent = cell; if (i === 1) td.className = cell === "なし" ? "cut none" : "cut"; tr.append(td); });
+          $("tbody", decEl).append(tr);
+        }
+        $(".dfoot", decEl).textContent = dec.foot || "";
+      } else decEl.remove();
+
       const stayEl = $(".stay", node);
       if (day.stay) {
         const lbl = document.createElement("span"); lbl.className = "lbl"; lbl.textContent = "🛏 宿泊";
@@ -150,9 +169,10 @@
 
   async function tryOpen(pass, persist) {
     const enc = await encPromise;
-    const data = await decrypt(enc, pass);
+    const data = await decrypt(enc, pass); // ここで失敗 = 合言葉違い
     storePass(pass, persist);
-    render(data, enc.updated);
+    try { render(data, enc.updated); }
+    catch (e) { console.error(e); alert("表示に失敗しました。ページを再読み込みしてください。"); }
   }
 
   $("#gate-form").addEventListener("submit", async (e) => {
