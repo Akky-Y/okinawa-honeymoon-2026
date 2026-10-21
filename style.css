@@ -117,3 +117,8 @@ html { scroll-behavior: smooth; }
   .day-visual { min-height: 100%; }
   .hero h1 { font-size: 40px; }
 }
+
+.item.move { margin: -4px 0; }
+.item.move .t { visibility: hidden; }
+.item.move .c .ti { font-weight: 400; font-size: 13px; color: var(--muted); }
+.item.move .c { border-left: 2px dashed var(--line); padding-left: 10px; }

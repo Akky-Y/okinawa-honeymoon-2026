@@ -58,7 +58,7 @@
       const ul = $(".items", node);
       for (const it of day.items || []) {
         const li = document.createElement("li");
-        li.className = "item";
+        li.className = "item" + (it.status === "move" ? " move" : "");
         const t = document.createElement("span"); t.className = "t"; t.textContent = it.time || "";
         const c = document.createElement("span"); c.className = "c";
         const ti = document.createElement("span"); ti.className = "ti"; ti.textContent = it.title;
